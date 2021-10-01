@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ic-devops
+  name: ic-deploy-devops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ic-devops
+  template:
+    metadata:
+      labels:
+        app: ic-devops
+    spec:
+      volumes:
+      - name: ic-volume-devops
+        emptyDir: {}
+      containers:
+
+      - name: ic-msg-devops
+        image: ubuntu:latest
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        command: ["/bin/bash"]
+        args: ["-c","echo Init Done - Welcome to xFusionCorp Industries > /ic/news"]
+        volumeMounts:
+        - name: ic-volume-devops
+          mountPath: /ic
+          
+      - name: ic-main-devops
+        image: ubuntu:latest
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        command: ["/bin/bash"]
+        args: ["-c","while true; do cat /ic/news; sleep 5; done"]
+        volumeMounts: 
+        - name: ic-volume-devops
+          mountPath: /ic
