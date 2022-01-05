@@ -1,0 +1,41 @@
+
+
+- name: Install and Deploy Tomcat using Ansible
+  hosts: all
+  become: 'yes'
+  become_method: sudo
+  remote_user: root
+
+  vars:
+    java_version: java-11-openjdk
+    tomcat_version: 10.0.14 
+    tomcat_port: 8080
+
+  tasks:
+  - name: Update All Packages on Remote Hosts
+    yum:
+      name: "*"
+      state: latest
+
+  - name: Install JDK latest version
+    yum:
+      name: "{{ java_version }}"
+      state: present
+
+  - name: Check JAVA version
+    shell: "java --version | head -n 1"    
+
+  - name: Download Tomcat bin file
+    get_url:
+      url: https://dlcdn.apache.org/tomcat/tomcat-10/v{{tomcat_version}}/bin/apache-tomcat-{{tomcat_version}}.tar.gz
+      dest: /usr/local
+
+  - name: Extract Tomcat bin zip file
+    unarchive:
+      src: /usr/local/apache-tomcat-{{tomcat_version}}.tar.gz
+      dest: /usr/local
+      remote_src: yes 
+
+  - name: Start Tomcat process
+    shell: nohup /usr/local/apache-tomcat-{{tomcat_version}}/bin/startup.sh      
+ 
