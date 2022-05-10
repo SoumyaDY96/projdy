@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export a=$(echo "welcome to JDoodle")
+
+read -a b <<< $a
+
+echo ${b[0]}
+echo ${b[1]}
+echo ${b[2]}
+echo ${b[@]}
